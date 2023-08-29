@@ -1,7 +1,7 @@
 ---
 name: "\b[feat] "
 about: 진행할 작업
-title: ''
+title: '기능'
 labels: ''
 assignees: kdkdhoho
 
@@ -12,3 +12,6 @@ assignees: kdkdhoho
 
 # ✅ 신경 쓸 포인트
 -
+
+# ❗️ 관련 이슈
+- 
