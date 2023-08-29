@@ -1,8 +1,8 @@
 ---
 name: "\b[feat] "
 about: 진행할 작업
-title: "기능"
-labels: ''
+title: "[feat] "
+labels: "기능"
 assignees: kdkdhoho
 
 ---
