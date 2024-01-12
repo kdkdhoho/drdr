@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# 본 스크립트는 브랜치 명을 토대로 개발자가 작성한 커밋 메시지에 자동으로 PREFIX와 POSTFIX 문자열을 추가하는 스크립트입니다.
+# 브랜치 명은 "feat/14" 처럼 "{type}/{issue_number}" 의 형식입니다.
+
+COMMIT_MESSAGE_FILE_PATH=$1 # 작성한 커밋 메시지가 저장된 File의 경로 추출
+MESSAGE=$(cat "$COMMIT_MESSAGE_FILE_PATH") # 작성한 커밋 메시지 추출
+
+# 커밋 메시지가 존재하지 않은 경우, 스크립트 종료
+if [[ $(head -1 "$COMMIT_MESSAGE_FILE_PATH") == '' ]]; then
+  exit 0
+fi
+
+# 브랜치 이름에서 '/' 이전의 문자열만 남긴다. 만약 명시적으로 type을 작성한 경우 작성하지 않는다.
+if [[ $MESSAGE == *:* ]]; then
+  PREFIX=""
+else
+  PREFIX="$(git branch | grep '\*' | sed 's/\* //' | sed 's/\([^/]*\).*/\1/'):"
+fi
+
+# 브랜치 이름에서 '/' 이후의 문자열만 남긴다. '/'가 없다면 브랜치 전체 이름이 POSTFIX가 된다.
+# POSTFIX의 첫 번째 '-' 앞 뒤의 문자열만 포함한다. '-'가 없다면 변경은 없다.
+# 명시적으로 이슈 번호를 작성한 경우 작성하지 않는다.
+if [[ $MESSAGE == *#* ]]; then
+  POSTFIX=""
+else
+  POSTFIX="(#$(git branch | grep '\*' | sed 's/* //' | sed 's/^.*\///' | sed 's/^\([^-]*-[^-]*\).*/\1/'))"
+fi
+
+printf "%s %s %s" "$PREFIX" "$MESSAGE" "$POSTFIX" > "$COMMIT_MESSAGE_FILE_PATH"
